@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Midtrans;
 use App\Models\modelDetailTransaksi;
 use App\Models\product;
 use App\Models\tblCart;
@@ -21,21 +22,21 @@ class Controller extends BaseController
 
     public function shop(Request $request)
     {
-        //TODO here
-        if ($request->has('kategory') && $request->has('type')) {
-            $category = $request->input('kategory');
-            $type = $request->input('type');
-            $data = product::where('kategory', $category)
-                ->orWhere('type', $type)->paginate(5);
-        } else {
-            $data = product::paginate(5);
+
+        $builder = product::orderBy('created_at', 'DESC');
+        if ($request->has('type')) {
+            $builder->where('type', $request->type);
         }
+        $data = $builder->paginate(5);
         $countKeranjang = tblCart::where(['idUser' => 'guest123', 'status' => 0])->count();
+        $label = product::select('type')->distinct()->get();
+
 
         return view('pelanggan.page.shop', [
             'title' => 'Shop',
             'data' => $data,
             'count' => $countKeranjang,
+            'label' => $label
         ]);
     }
 
@@ -177,13 +178,14 @@ class Controller extends BaseController
             ],
         ];
 
-        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        $midtrans = new Midtrans();
+        $res = (array)json_decode($midtrans->TransactionPush($params));
 
         return view('pelanggan.page.detailTransaksi', [
             'name' => 'Detail Transaksi',
             'title' => 'Detail Transaksi',
             'count' => $countKeranjang,
-            'token' => $snapToken,
+            'token' => $res['token'],
             'data' => $find_data,
         ]);
     }
@@ -239,6 +241,11 @@ class Controller extends BaseController
 
         $user = User::where('email', $request->email)->first();
 
+        if ($user === null) {
+            Session::flash('error', 'Email tidak ditemukan');
+            return back();
+        }
+
         if ($user->is_admin === 0) {
             Session::flash('error', 'Kamu bukan admin');
             return back();
@@ -253,6 +260,7 @@ class Controller extends BaseController
             }
         }
     }
+
 
     public function logout()
     {

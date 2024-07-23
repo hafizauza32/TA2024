@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [TransaksiController::class, 'index'])->name('home');
 Route::POST('/addTocart', [TransaksiController::class, 'addTocart'])->name('addTocart');
 Route::POST('/storePelanggan', [UserController::class, 'storePelanggan'])->name('storePelanggan');
-Route::POST('/login_pelanggan', [UserController::class, 'loginProses'])->name('loginproses.pelanggan');
+Route::post('/login_pelanggan', [UserController::class, 'loginProses'])->name('loginproses.pelanggan');
 Route::GET('/logout_pelanggan', [UserController::class, 'logout'])->name('logout.pelanggan');
 
 Route::get('/shop', [Controller::class, 'shop'])->name('shop');

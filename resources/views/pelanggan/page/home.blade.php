@@ -14,6 +14,7 @@
                     </div>
                     <div class="card-body">
                         <p class="m-0 text-justify"> {{ $b->nama_product }} </p>
+                        <p class="m-0 text-muted">SKU: {{ $b->sku }}</p>
                         <p class="m-0"><i class="fa-regular fa-star"></i> 5+</p>
                     </div>
                     <div class="card-footer d-flex flex-row justify-content-between align-items-center">
@@ -41,6 +42,7 @@
                     </div>
                     <div class="card-body">
                         <p class="m-0 text-justify"> {{ $p->nama_product }} </p>
+                        <p class="m-0 text-muted"> {{ $p->sku }}</p>
                         <p class="m-0"><i class="fa-regular fa-star"></i> 5+</p>
                     </div>
                     <div class="card-footer d-flex flex-row justify-content-between align-items-center">
@@ -56,6 +58,7 @@
                     </div>
                 </div>
             @endforeach
+        @endif
     </div>
     <div class="pagination d-flex flex-row justify-content-between">
         <div class="showData">
@@ -65,6 +68,4 @@
             {{ $data->links() }}
         </div>
     </div>
-    @endif
-
 @endsection
